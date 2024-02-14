@@ -1,8 +1,8 @@
 class VenuesController < ApplicationController
 
   def index
-    matching_venues = venue.all
-    venues = matching_venues.order(:created_at)
+    matching_venues = Venue.all
+    @venues = matching_venues.order(:created_at)
 
     render({ :template => "venue_templates/venue_list" })
   end
@@ -10,37 +10,53 @@ class VenuesController < ApplicationController
   def show
     venue_id = params.fetch("venue_id")
     matching_venues = Venue.where({ :id => venue_id })
-    the_venue = matching_venues
+    @the_venue = matching_venues.at(0)
 
     render({ :template => "venue_templates/details" })
   end
 
-  def create
-    @venue = Venue.new
-    venue.address = params.fetch("query_address")
-    venue.name = params.fetch("name")
-    venue.neighborhood = params.fetch("neighborhood")
-    venue.save
+  def comment
+    @the_comment = Comment.new
+    
+    @the_comment.venue_id = params.fetch("query_venue_id")
+    @the_comment.author_id = params.fetch("query_author_id")
+    @the_comment.body = params.fetch("query_body")
+    @the_comment.save
 
-    redirect_to("/venues/#{venue.name}")
+    
+    redirect_to("/venues/#{@the_comment.venue_id}")
+  end
+
+  def create
+    @venues = Venue.new
+
+    @venues.address = params.fetch("query_address")
+    @venues.name = params.fetch("query_name")
+    @venues.neighborhood = params.fetch("query_neighborhood")
+
+    @venues.save
+
+
+    redirect_to("/venues/#{@venues.id}")
   end
   
   def update
     the_id = params.fetch("venue_id")
 
-    @venue = Venue.where({ :id => the_id })
-    venue.address = params.fetch("query_address")
-    venue.name = params.fetch("Query_name")
-    venue.neighborhood = params.fetch("query_neighborhood")
-    venue.save
+    @the_venue = Venue.where({ :id => the_id }).at(0)
+
+    @the_venue.address = params.fetch("query_address")
+    @the_venue.name = params.fetch("query_name")
+    @the_venue.neighborhood = params.fetch("query_neighborhood")
+    @the_venue.save
     
-    redirect_to("/venues/#{venue.id}")
+    redirect_to("/venues/#{@the_venue.id}")
   end
 
   def destroy
     the_id = params.fetch("venue_id")
     matching_venues = Venue.where({ :id => the_id })
-    venue = matching_venues
+    venue = matching_venues.at(0)
     venue.destroy
 
     redirect_to("/venues")

@@ -14,12 +14,18 @@ class User < ApplicationRecord
     :uniqueness => { :case_sensitive => false },
   })
 
+  #Store User Instance id into my_id
+  #Uses my_id to query Comment database for "author_id" value.
+  #Returns an ARR of Comment Instances from the User
   def comments
     my_id = self.id
     matching_comments = Comment.where({ :author_id => my_id })
     return matching_comments
   end
 
+  #Stores the ARR into my_comments
+  #Create a new Array array_of_venue_ids
+  #Each loop through my_comments and add JUST the venue_id
   def commented_venues
 
     my_comments = self.comments

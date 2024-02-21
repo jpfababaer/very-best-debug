@@ -40,6 +40,7 @@ class VenuesController < ApplicationController
     redirect_to("/venues/#{@venues.id}")
   end
   
+  #2/15 QUESTION: does the variable I define in method "update" have to match the endpoint HTML it's redirecting to so that the values get redefined dynamically.
   def update
     the_id = params.fetch("venue_id")
 
